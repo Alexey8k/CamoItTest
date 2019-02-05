@@ -1,0 +1,80 @@
+﻿@using System.Configuration
+@using System.Web.Mvc.Html
+@using ASP_NET_MVC_KP_TestCamoIt_.Models
+@using DataMapping
+@using MappingConfigSection
+@model MappingViewModel
+
+@{
+    ViewBag.Title = "Mapping " + Model.FileName;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+    <h4>@Model.FileName</h4>
+    @using (Html.BeginForm("Mapping", "Home", FormMethod.Post))
+    {
+        @Html.ValidationSummary()
+        <table class="table table-bordered table-striped">
+            <thead style="background-color: darkgrey">
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.Columns.First().Header)</th>
+                <th>@Html.DisplayNameFor(m => m.Columns.First().Parameter)</th>
+                <th>@Html.DisplayNameFor(m => m.Columns.First().ExampleValues)</th>
+                <th style="white-space: nowrap; width: 300px">@Html.DisplayNameFor(m => m.Columns.First().DataErrors)</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var row in Model.Columns)
+            {
+                <tr>
+                    <td>@row.Header</td>
+                    <td>
+                        @{
+                            var selectList = new List<SelectListItem>();
+                            foreach (var p in Model.Parameters)
+                            {
+                                selectList.Add(new SelectListItem { Text = p, Value = p, Selected = row.Parameter == p });
+                            }
+                        }
+                        @Html.DropDownListFor(m => row.Parameter, selectList, new { Name = row.Header, @class = "form-control", style = "width: auto" })
+                    </td>
+                    <td>
+                        @for (var i = 0; i < row.ExampleValues.Count; i++)
+                        {
+                            <span>@row.ExampleValues[i]</span>
+                            if (i != row.ExampleValues.Count - 1)
+                            {
+                                <span>&nbsp;/&nbsp;</span>
+                            }
+                        }
+                    </td>
+                    <td>
+                        @foreach (var e in row.DataErrors)
+                        {
+                            <div>@e</div>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <div class="text-right">
+            <button type="submit" id="defaultBtn" class="btn btn-primary">ОК</button>
+            @Html.ActionLink("Отмена", "Index", "Home", new { @class = "btn btn-primary" })
+        </div>
+    }
+</div>
+
+<script>
+    $(function () {
+        $(this).on("keydown",
+            function (e) {
+                if (e.key === "Enter")
+                    $('#defaultBtn').trigger('click');
+            });
+        $('select').on('change',
+            function() {
+                $(this).blur();
+            });
+    });
+</script>

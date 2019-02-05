@@ -1,0 +1,61 @@
+﻿@model ASP_NET_MVC_KP_TestCamoIt_.Models.UploadFileModel
+
+@{
+    ViewBag.Title = "Выбор файла";
+    //Html.EnableClientValidation(false);
+    //Html.EnableUnobtrusiveJavaScript(false);
+}
+
+<div style="font-weight: bold; font-size: 19px; margin-bottom: 31px">
+    Выберите .CSV файл
+</div>
+
+@using (Html.BeginForm("Index", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <p>@Html.ValidationMessageFor(m => m.File)</p>
+    <p>@Html.ValidationMessageFor(m => m.FileName)</p>
+
+    <div class="well well-sm" style="width: 400px; display: inline-flex">
+        @Html.LabelFor(m => m.File, new { @class = "btn btn-default" })
+        @Html.TextBoxFor(m => m.File, new { type = "file", style = "position: absolute; left: -9999px", accept = ".csv" })
+        <span id="DisplayFileName" style="margin: auto"></span>
+        @Html.HiddenFor(m => m.FileName)
+        @*@Html.TextBoxFor(m => m.FileName, new { @readonly = true, style = "border: none; background-color: transparent; margin: auto" })*@
+    </div>
+
+    <button type="submit" id="submitFile" class="btn btn-primary" disabled style="white-space:normal; display: inline-flex; padding: 0 15px;">
+        <span class="glyphicon glyphicon-upload" aria-hidden="true" style="margin: auto"></span>
+        <span class="pull-right" style="text-align: left; margin-left: 15px;">Загрузить<br />файл</span>
+    </button>
+}
+
+<script>
+       
+    $(function () {
+        $(this).on("keydown",
+            function (e) {
+                if (e.key === "Enter")
+                    $('#submitFile').trigger('click');
+            });
+        $('Form').data("validator").settings.ignore = null;    // or $.validator.setDefaults({ ignore: null });
+        var file = $('#File');
+
+        file.on("change",
+            function () {
+                $('#FileName').val(file.get(0).files[0].name);
+                $('#DisplayFileName').html($('#FileName').val());
+                //file.blur();    // action for validator work start
+                validateForm();
+                file.blur();
+            });
+
+        if (file.get(0).files[0].name)
+            validateForm();
+
+        function validateForm() {
+            // action for validator work start and buttom submit disabled set true or false
+            $('#submitFile').attr('disabled', !$('Form').validate().form()); 
+        }
+
+    });
+</script>

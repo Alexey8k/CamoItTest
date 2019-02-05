@@ -1,0 +1,39 @@
+﻿@using System.Data
+@model int
+@{
+    ViewBag.Title = "DataView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>DataView</h2>
+
+<div id="ajax">
+    @Html.Action("GetDataView", new { page = Model })
+</div>
+
+@Html.ActionLink("Вернуться на главную форму", "Index", "Home", new { @class = "btn btn-primary pull-right" })
+
+@*<div class="btn-group">
+        <button class="btn btn-default">
+            <span class="glyphicon glyphicon-menu-left"></span>
+        </button>
+        @for (var i = 1; i <= 9; i++)
+        {
+            @Ajax.ActionLink(i.ToString(), "DataView",
+            new { selected = i },
+            new AjaxOptions
+            {
+                HttpMethod = "Post",
+                Url = Url.Action("DataView", new { selected = i }),
+                OnSuccess = "processData"
+            }, i == 5 ? (object)new { @class = "btn btn-default", disabled = "disabled" } : (object)new { @class = "btn btn-default" })
+
+        }
+        <button class="btn btn-default">
+            <span class="glyphicon glyphicon-menu-right"></span>
+        </button>
+    </div>*@
+
+
+
+

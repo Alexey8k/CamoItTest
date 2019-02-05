@@ -1,0 +1,55 @@
+﻿@using System.Data
+@using PagedList.Mvc
+@model PagedList.IPagedList<DataRow>
+
+<table class="table table-bordered">
+    <thead style="background-color: darkgrey">
+    <tr>
+        @foreach (DataColumn header in Model.First().Table.Columns)
+        {
+            <th>@header.ColumnName</th>
+        }
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var row in Model)
+    {
+        <tr>
+            @foreach (var col in row.ItemArray)
+            {
+                <td>@col</td>
+            }
+        </tr>
+    }
+    </tbody>
+</table>
+
+@{
+    var olderNewer = PagedListRenderOptions.TwitterBootstrapPagerAligned;
+    olderNewer.UlElementClasses = olderNewer.UlElementClasses.Concat(new[] { "older-newer", "center-block" });
+}
+
+<div style="width: auto; margin: auto">
+    @Html.PagedListPager(
+        Model,
+        page => Url.Action("DataView", new {page}), new PagedListRenderOptions
+        {
+            DisplayEllipsesWhenNotShowingAllPageNumbers = false,
+            Display = PagedListDisplayMode.Always,
+            DisplayLinkToFirstPage = PagedListDisplayMode.Never,
+            DisplayLinkToLastPage = PagedListDisplayMode.Never,
+            DisplayLinkToNextPage = PagedListDisplayMode.Always,
+            DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+            MaximumPageNumbersToDisplay = 9,
+            ContainerDivClasses = new PagedListRenderOptions().ContainerDivClasses.Concat(new[] { "text-center" })
+        })
+
+    @Html.PagedListPager(Model, page => Url.Action("DataView", new { page }), olderNewer)
+</div>
+
+
+<script>
+    $(function() {
+        $('ul.pager.older-newer').css('width', $('ul.pagination').css('width'));
+    })
+</script>
